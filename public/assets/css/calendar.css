@@ -1,0 +1,610 @@
+/*
+ * PRODOCET LMS - Calendar Styles
+ * Author: Assistant
+ * Description: CSS styles for the calendar and scheduling page
+ */
+
+/* Calendar-specific styles */
+.calendar-view-controls .btn-group .btn {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.calendar-view-controls .btn.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* FullCalendar customizations */
+.fc {
+    font-family: inherit;
+}
+
+.fc-toolbar {
+    margin-bottom: 1.5rem;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.fc-button-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    border-radius: var(--border-radius-md);
+}
+
+.fc-button-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.fc-button-primary:disabled {
+    background-color: var(--text-muted);
+    border-color: var(--text-muted);
+}
+
+.fc-button-group .fc-button {
+    margin-right: 2px;
+}
+
+.fc-button-group .fc-button:last-child {
+    margin-right: 0;
+}
+
+/* Calendar grid customizations */
+.fc-daygrid-day {
+    background-color: var(--background-primary);
+}
+
+.fc-daygrid-day:hover {
+    background-color: var(--background-secondary);
+}
+
+.fc-daygrid-day-number {
+    color: var(--text-primary);
+    font-weight: 500;
+    padding: 0.5rem;
+}
+
+.fc-day-today {
+    background-color: var(--primary-lightest) !important;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.25rem;
+}
+
+/* Event styling */
+.fc-event {
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 2px 6px;
+    margin: 1px 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.fc-event:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.fc-event-title {
+    font-weight: 600;
+}
+
+.fc-event-time {
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* Event colors by type */
+.fc-event.event-class {
+    background-color: var(--primary-color);
+    border-left: 4px solid var(--primary-dark);
+}
+
+.fc-event.event-exam {
+    background-color: var(--secondary-color);
+    border-left: 4px solid var(--secondary-dark);
+}
+
+.fc-event.event-meeting {
+    background-color: var(--warning-color);
+    border-left: 4px solid var(--accent-dark);
+}
+
+.fc-event.event-holiday {
+    background-color: var(--error-color);
+    border-left: 4px solid #dc2626;
+}
+
+.fc-event.event-other {
+    background-color: #8b5cf6;
+    border-left: 4px solid #7c3aed;
+}
+
+/* Time grid customizations */
+.fc-timegrid-slot {
+    height: 3rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.fc-timegrid-slot-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.fc-timegrid-axis {
+    background-color: var(--background-secondary);
+}
+
+.fc-timegrid-event {
+    border-radius: var(--border-radius-md);
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.fc-timegrid-event:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* List view customizations */
+.fc-list-table {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+.fc-list-day-cushion {
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+}
+
+.fc-list-event {
+    border-bottom: 1px solid var(--border-light);
+}
+
+.fc-list-event:hover {
+    background-color: var(--background-secondary);
+}
+
+.fc-list-event-time {
+    color: var(--text-secondary);
+    font-weight: 500;
+    width: 100px;
+}
+
+.fc-list-event-title {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Sidebar styles */
+.today-class-item,
+.upcoming-event-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: var(--border-radius-md);
+    margin-bottom: 0.5rem;
+    transition: var(--transition-fast);
+    border: 1px solid var(--border-light);
+}
+
+.today-class-item:hover,
+.upcoming-event-item:hover {
+    background-color: var(--background-secondary);
+    border-color: var(--border-color);
+}
+
+.class-time,
+.event-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.class-time .time,
+.event-time .time {
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+.class-time .period,
+.event-time .period {
+    font-size: 0.625rem;
+    opacity: 0.8;
+}
+
+.class-info,
+.event-info {
+    flex: 1;
+}
+
+.class-title,
+.event-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.class-details,
+.event-details {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.class-teacher,
+.event-location {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.class-students {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Legend styles */
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--border-radius-sm);
+    flex-shrink: 0;
+}
+
+/* Modal customizations */
+.form-control-color {
+    width: 60px;
+    height: 38px;
+    border-radius: var(--border-radius-md);
+}
+
+/* Event details modal content */
+.event-detail-header {
+    display: flex;
+    justify-content: between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.event-detail-title {
+    flex: 1;
+}
+
+.event-detail-title h4 {
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.event-detail-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.event-detail-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-group h6 {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.info-item i {
+    width: 16px;
+    color: var(--text-secondary);
+}
+
+.info-item span {
+    color: var(--text-primary);
+}
+
+/* Badge variations */
+.language-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+}
+
+.language-badge.language-inglés {
+    background-color: #3b82f6;
+}
+
+.language-badge.language-francés {
+    background-color: #8b5cf6;
+}
+
+.language-badge.language-alemán {
+    background-color: #f59e0b;
+}
+
+.language-badge.language-italiano {
+    background-color: #10b981;
+}
+
+.language-badge.language-portugués {
+    background-color: #ef4444;
+}
+
+.level-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: var(--background-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h6 {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.empty-state p {
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .fc-toolbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .calendar-view-controls {
+        order: -1;
+    }
+    
+    .fc-button-group {
+        display: flex;
+        width: 100%;
+    }
+    
+    .fc-button-group .fc-button {
+        flex: 1;
+        margin: 0 1px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .today-class-item,
+    .upcoming-event-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .class-time,
+    .event-time {
+        margin-right: 0;
+        margin-bottom: 0.75rem;
+    }
+    
+    .class-info,
+    .event-info {
+        width: 100%;
+    }
+    
+    .event-detail-info {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .fc-toolbar-title {
+        font-size: 1.25rem;
+    }
+    
+    .fc-daygrid-event {
+        font-size: 0.7rem;
+    }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .fc-button-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .fc-daygrid-day {
+        background-color: var(--background-primary);
+        border-color: var(--border-color);
+    }
+    
+    .fc-col-header-cell {
+        background-color: var(--background-secondary);
+    }
+    
+    .fc-scrollgrid {
+        border-color: var(--border-color);
+    }
+}
+
+/* Print styles */
+@media print {
+    .calendar-view-controls,
+    .content-actions,
+    .modal {
+        display: none !important;
+    }
+    
+    .fc-toolbar {
+        margin-bottom: 1rem;
+    }
+    
+    .fc-event {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #ccc !important;
+    }
+    
+    .fc-daygrid-day {
+        background: white !important;
+    }
+}
+
+/* Animation classes */
+.fade-in-up {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Loading states */
+.calendar-loading {
+    position: relative;
+    min-height: 400px;
+}
+
+.calendar-loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-light);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Accessibility improvements */
+.fc-event:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.fc-button:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .fc-event {
+        border: 2px solid currentColor !important;
+    }
+    
+    .legend-color {
+        border: 2px solid var(--text-primary);
+    }
+}

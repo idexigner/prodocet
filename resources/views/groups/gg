@@ -1,0 +1,139 @@
+
+@extends('layouts.app')
+
+@section('title', 'Gestión de Grupos')
+
+@section('content')
+  
+            <div class="content-header">
+                <div class="content-title">
+                    <h1>GestiÃ³n de Grupos</h1>
+                    <p class="content-subtitle">Administrar grupos, cursos y asignaciones de estudiantes</p>
+                </div>
+                <div class="content-actions">
+                    <button class="btn btn-success" onclick="openNewGroupModal()">
+                        <i class="fas fa-plus"></i>
+                        Nuevo Grupo
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="exportGroups()">
+                        <i class="fas fa-download"></i>
+                        Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Idioma</label>
+                                    <select class="form-select" id="languageFilter">
+                                        <option value="">Todos los idiomas</option>
+                                        <option value="english">InglÃ©s</option>
+                                        <option value="french">FrancÃ©s</option>
+                                        <option value="german">AlemÃ¡n</option>
+                                        <option value="italian">Italiano</option>
+                                        <option value="portuguese">PortuguÃ©s</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Nivel</label>
+                                    <select class="form-select" id="levelFilter">
+                                        <option value="">Todos los niveles</option>
+                                        <option value="A1">A1 - BÃ¡sico</option>
+                                        <option value="A2">A2 - Elemental</option>
+                                        <option value="B1">B1 - Intermedio</option>
+                                        <option value="B2">B2 - Intermedio Alto</option>
+                                        <option value="C1">C1 - Avanzado</option>
+                                        <option value="C2">C2 - Experto</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Estado</label>
+                                    <select class="form-select" id="statusFilter">
+                                        <option value="">Todos los estados</option>
+                                        <option value="active">Activo</option>
+                                        <option value="inactive">Inactivo</option>
+                                        <option value="completed">Completado</option>
+                                        <option value="suspended">Suspendido</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button class="btn btn-primary w-100" onclick="applyFilters()">
+                                        <i class="fas fa-filter"></i>
+                                        Aplicar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Groups Table -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">
+                                <i class="fas fa-users me-2"></i>
+                                Lista de Grupos
+                            </h5>
+                            <div class="card-tools">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary active" onclick="switchView('table')">
+                                        <i class="fas fa-table"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="switchView('cards')">
+                                        <i class="fas fa-th"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Table View -->
+                            <div id="tableView">
+                                <div class="table-responsive">
+                                    <table id="groupsTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Nombre del Grupo</th>
+                                                <th>Idioma</th>
+                                                <th>Nivel</th>
+                                                <th>Profesor</th>
+                                                <th>Estudiantes</th>
+                                                <th>Horario</th>
+                                                <th>Estado</th>
+                                                <th>Tarifa/Hora</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Data will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Cards View (Initially Hidden) -->
+                            <div id="cardsView" class="d-none">
+                                <div class="row" id="groupsCards">
+                                    <!-- Cards will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+@endsection
+
+
+@push('scripts')
+<script src="{{ asset('assets/js/groups.js') }}"></script>
+    
+@endpush

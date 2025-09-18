@@ -1,0 +1,487 @@
+/* 
+ * PRODOCET LMS - Authentication Styles
+ * Author: Assistant
+ * Description: CSS styles for login and signup pages
+ */
+
+:root {
+    /* Primary color scheme - easily customizable */
+    --primary-color: #4f46e5;
+    --primary-dark: #3730a3;
+    --primary-light: #6366f1;
+    --secondary-color: #10b981;
+    --accent-color: #f59e0b;
+    
+    /* Neutral colors */
+    --background-light: #f8fafc;
+    --background-white: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --border-color: #e5e7eb;
+    --border-light: #f3f4f6;
+    
+    /* Shadow and effects */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    
+    /* Border radius */
+    --border-radius-sm: 0.375rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease-in-out;
+    --transition-normal: 0.3s ease-in-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+}
+
+/* Authentication Container */
+.auth-container {
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Brand Side Styling */
+.auth-brand-side {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-brand-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.brand-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    color: white;
+}
+
+.brand-logo {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.brand-logo img {
+    width: 170px;
+    height: 120px;
+    background: #fff;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: var(--transition-normal);
+}
+
+.brand-logo img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.brand-logo h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+}
+
+.brand-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.8;
+    font-weight: 300;
+}
+
+.brand-features {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 300px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+    backdrop-filter: blur(10px);
+    transition: var(--transition-normal);
+}
+
+.feature-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(10px);
+}
+
+.feature-item i {
+    font-size: 1.25rem;
+    width: 20px;
+    text-align: center;
+}
+
+.feature-item span {
+    font-weight: 500;
+}
+
+/* Form Side Styling */
+.auth-form-side {
+    background: var(--background-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.auth-form-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.mobile-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+
+.mobile-logo img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-logo h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+/* Form Styling */
+.auth-form {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group-text {
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-right: none;
+}
+
+.form-control {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: var(--transition-fast);
+    background: var(--background-white);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+    background: var(--background-white);
+}
+
+.form-select {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: var(--transition-fast);
+    background: var(--background-white);
+}
+
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-outline-secondary {
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--background-light);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Form Elements */
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Form Footer */
+.form-footer {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: var(--transition-fast);
+}
+
+.forgot-password:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.signup-link,
+.login-link {
+    margin-top: 1.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.signup-link a,
+.login-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+
+.signup-link a:hover,
+.login-link a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Loading States */
+.login-btn:disabled,
+.signup-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    color: white;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-form-side {
+        padding: 1rem;
+    }
+    
+    .auth-form-container {
+        max-width: 100%;
+    }
+    
+    .form-title {
+        font-size: 1.5rem;
+    }
+    
+    .brand-logo h1 {
+        font-size: 2rem;
+    }
+    
+    .brand-logo i {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-form-side {
+        padding: 0.5rem;
+    }
+    
+    .form-title {
+        font-size: 1.375rem;
+    }
+    
+    .btn-primary {
+        padding: 0.875rem 1.5rem;
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-white: #1f2937;
+        --background-light: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --text-muted: #9ca3af;
+        --border-color: #4b5563;
+        --border-light: #374151;
+    }
+}
+
+/* Form validation styles */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-valid {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+}
+
+.invalid-feedback,
+.valid-feedback {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Accessibility improvements */
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+    outline: none;
+}
+
+.form-control:focus-visible,
+.form-select:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Animation for form transitions */
+.auth-form.fade-out {
+    animation: fadeOutDown 0.3s ease-in forwards;
+}
+
+.auth-form.fade-in {
+    animation: fadeInUp 0.3s ease-out forwards;
+}
+
+@keyframes fadeOutDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}
