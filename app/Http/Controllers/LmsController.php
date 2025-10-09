@@ -46,6 +46,16 @@ class LmsController extends Controller
                 'name' => $user->name
             ]);
             
+            // if ($user->hasRole('student')) {
+            //     \Log::info('user login auth Redirecting student to student dashboard');
+            //     return redirect()->route('student.dashboard');
+            // }else{
+            //     \Log::info('to dashboard');
+            //     return redirect()->route('dashboard');
+            // }
+
+            // Always redirect to main dashboard route, let it handle role-based routing
+            \Log::info('Login successful, redirecting to dashboard');
             return redirect()->route('dashboard');
         }
 

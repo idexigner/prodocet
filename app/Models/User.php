@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Helpers\PermissionHelper;
 
 class User extends Authenticatable
 {
@@ -26,6 +27,7 @@ class User extends Authenticatable
               'password',
               'phone',
               'document_id',
+              'passport_number',
               'birth_date',
               'address',
               'emergency_contact',
@@ -34,6 +36,7 @@ class User extends Authenticatable
               'role',
               'is_active',
               'last_login_at',
+              'documents',
           ];
 
     /**
@@ -114,6 +117,94 @@ class User extends Authenticatable
      */
     public function hasCustomPermission($permission)
     {
-        return _has_permission($this, $permission);
+        // return _has_permission($this, $permission);
+        return PermissionHelper::hasPermission($this, $permission);
+    }
+
+    /**
+     * Get documents as array.
+     */
+    public function getDocumentsAttribute($value)
+    {
+        if (empty($value)) {
+            return [];
+        }
+        return is_string($value) ? explode(',', $value) : $value;
+    }
+
+    /**
+     * Set documents as comma-separated string.
+     */
+    public function setDocumentsAttribute($value)
+    {
+        if (is_array($value)) {
+            $this->attributes['documents'] = implode(',', $value);
+        } else {
+            $this->attributes['documents'] = $value;
+        }
+    }
+
+    /**
+     * Get document URLs for display.
+     */
+    public function getDocumentUrlsAttribute()
+    {
+        $documents = $this->documents;
+        if (empty($documents)) {
+            return [];
+        }
+        
+        return array_map(function($doc) {
+            return asset('storage/documents/' . $doc);
+        }, $documents);
+    }
+
+    /**
+     * Get the student documents for this user.
+     */
+    public function studentDocuments()
+    {
+        return $this->hasMany(StudentDocument::class, 'student_id');
+    }
+
+    /**
+     * Get the primary document for this student.
+     */
+    public function primaryDocument()
+    {
+        return $this->hasOne(StudentDocument::class, 'student_id')->where('is_primary', true);
+    }
+
+    /**
+     * Get the teacher availabilities for this user.
+     */
+    public function teacherAvailabilities()
+    {
+        return $this->hasMany(TeacherAvailability::class, 'teacher_id');
+    }
+
+    /**
+     * Get the group enrollments for this student.
+     */
+    public function groupEnrollments()
+    {
+        return $this->hasMany(GroupStudent::class, 'student_id');
+    }
+
+    /**
+     * Get the groups this student is enrolled in.
+     */
+    public function enrolledGroups()
+    {
+        return $this->belongsToMany(Group::class, 'group_students', 'student_id', 'group_id')
+                    ->withPivot([
+                        'academic_hours_purchased',
+                        'academic_hours_used',
+                        'enrollment_date',
+                        'status',
+                        'final_grade',
+                        'notes'
+                    ])
+                    ->withTimestamps();
     }
 }

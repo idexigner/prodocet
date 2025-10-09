@@ -8,6 +8,7 @@ return [
     'heading' => 'Gestión de Estudiantes',
     'add_new' => 'Agregar Nuevo Estudiante',
     'edit_student' => 'Editar Estudiante',
+    'basic_info' => 'Información Básica',
     
     // Table Headers
     'id' => 'ID',
@@ -45,11 +46,13 @@ return [
     'address_placeholder' => 'Dirección',
     'emergency_contact_placeholder' => 'Contacto de Emergencia',
     'emergency_phone_placeholder' => 'Teléfono de Emergencia',
+    'passport_number_placeholder' => 'Número de Pasaporte',
     
     // Buttons
     'submit' => 'Enviar',
     'update' => 'Actualizar',
     'close' => 'Cerrar',
+    'save' => 'Guardar',
     'edit' => 'Editar',
     'delete' => 'Eliminar',
     'restore' => 'Restaurar',
@@ -105,4 +108,19 @@ return [
     'validation_failed' => 'Error de validación',
     'create_form_failed' => 'Error al cargar el formulario de creación',
     'edit_form_failed' => 'Error al cargar el formulario de edición',
+    
+    // Missing translations
+    'passport_number' => 'Número de Pasaporte',
+    'documents' => 'Documentos',
+    'generate_password' => 'Generar Contraseña',
+    'toggle_password' => 'Alternar Visibilidad de Contraseña',
+    'upload_documents' => 'Subir Documentos',
+    'view_document' => 'Ver Documento',
+    'remove_document' => 'Eliminar Documento',
+    'password_generated' => 'Contraseña Generada',
+    'document_uploaded' => 'Documento Subido',
+    'document_removed' => 'Documento Eliminado',
+    'select_files' => 'Seleccionar Archivos',
+    'accepted_formats' => 'Formatos aceptados: PDF, DOC, DOCX, JPG, JPEG, PNG',
+    'max_file_size' => 'Tamaño máximo: 10MB',
 ];

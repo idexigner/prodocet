@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             PermissionSeeder::class,
+            SlotSeeder::class,
+            StudentDocumentSeeder::class,
         ]);
     }
 }

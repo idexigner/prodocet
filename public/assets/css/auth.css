@@ -35,7 +35,10 @@
     /* Transitions */
     --transition-fast: 0.15s ease-in-out;
     --transition-normal: 0.3s ease-in-out;
+
+    --background-dark: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
 }
+
 
 * {
     margin: 0;
@@ -45,7 +48,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    background: #fff;
     min-height: 100vh;
     color: var(--text-primary);
 }
@@ -58,7 +61,7 @@ body {
 
 /* Brand Side Styling */
 .auth-brand-side {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    /* background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); */
     position: relative;
     overflow: hidden;
 }
@@ -83,7 +86,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 2rem;
-    color: white;
+    color: var(--primary-color);
 }
 
 .brand-logo {
@@ -154,7 +157,8 @@ body {
 
 /* Form Side Styling */
 .auth-form-side {
-    background: var(--background-white);
+    /* background:  */
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -204,12 +208,12 @@ body {
 .form-title {
     font-size: 1.875rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: #fff;
     margin-bottom: 0.5rem;
 }
 
 .form-subtitle {
-    color: var(--text-secondary);
+    color: #fff;
     margin-bottom: 2rem;
     font-size: 1rem;
 }
@@ -220,7 +224,7 @@ body {
 
 .form-label {
     font-weight: 600;
-    color: var(--text-primary);
+    color: #fff;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
 }
@@ -308,7 +312,7 @@ body {
 }
 
 .form-check-label {
-    color: var(--text-secondary);
+    color: #fff;
     font-size: 0.875rem;
 }
 
@@ -319,7 +323,7 @@ body {
 }
 
 .forgot-password {
-    color: var(--primary-color);
+    color: #fff;
     text-decoration: none;
     font-size: 0.875rem;
     font-weight: 500;
@@ -334,13 +338,13 @@ body {
 .signup-link,
 .login-link {
     margin-top: 1.5rem;
-    color: var(--text-secondary);
+    color: #fff;
     font-size: 0.875rem;
 }
 
 .signup-link a,
 .login-link a {
-    color: var(--primary-color);
+    color: #fff;
     text-decoration: none;
     font-weight: 600;
     transition: var(--transition-fast);

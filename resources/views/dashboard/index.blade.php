@@ -345,7 +345,7 @@ function exportDashboard() {
 
 function openNewGroupModal() {
     // Add new group modal logic here
-    window.location.href = "{{ route('groups') }}";
+    window.location.href = "{{ route('groups.index') }}";
 }
 
 function openStudentModal() {

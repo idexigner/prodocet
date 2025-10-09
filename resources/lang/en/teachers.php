@@ -8,6 +8,7 @@ return [
     'heading' => 'Teachers Management',
     'add_new' => 'Add New Teacher',
     'edit_teacher' => 'Edit Teacher',
+    'basic_info' => 'Basic Information',
     
     // Table Headers
     'id' => 'ID',
@@ -45,6 +46,7 @@ return [
     'address_placeholder' => 'Address',
     'emergency_contact_placeholder' => 'Emergency Contact',
     'emergency_phone_placeholder' => 'Emergency Phone',
+    'passport_number_placeholder' => 'Passport Number',
     
     // Buttons
     'submit' => 'Submit',
@@ -105,4 +107,30 @@ return [
     'validation_failed' => 'Validation failed',
     'create_form_failed' => 'Failed to load creation form',
     'edit_form_failed' => 'Failed to load edit form',
+    
+    // Missing translations
+    'passport_number' => 'Passport Number',
+    'documents' => 'Documents',
+    'generate_password' => 'Generate Password',
+    'toggle_password' => 'Toggle Password Visibility',
+    'upload_documents' => 'Upload Documents',
+    'view_document' => 'View Document',
+    'remove_document' => 'Remove Document',
+    'password_generated' => 'Password Generated',
+    'document_uploaded' => 'Document Uploaded',
+    'document_removed' => 'Document Removed',
+    'select_files' => 'Select Files',
+    'accepted_formats' => 'Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG',
+    'max_file_size' => 'Max file size: 10MB',
+    
+    // Course Management
+    'courses' => 'Courses',
+    'assigned_courses' => 'Assigned Courses',
+    'select_courses' => 'Select Courses',
+    'courses_help_text' => 'Hold Ctrl (or Cmd on Mac) to select multiple courses',
+    'currently_assigned' => 'Currently Assigned',
+    'no_courses_assigned' => 'No courses assigned to this teacher',
+    'save_courses' => 'Save Courses',
+    'courses_save_failed' => 'Failed to save course assignments',
+    'saving' => 'Saving...',
 ];

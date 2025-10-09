@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
 class RoleController extends Controller
@@ -37,13 +38,13 @@ class RoleController extends Controller
                     ->addColumn('action', function ($role) {
                         $actions = '';
                         
-                        if (_has_permission(auth()->user(), 'roles.edit')) {
+                        if (_has_permission('roles.edit')) {
                             $actions .= '<button class="btn btn-sm btn-primary edit-btn" data-id="' . $role->id . '" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button> ';
                         }
                         
-                        if (_has_permission(auth()->user(), 'roles.delete')) {
+                        if (_has_permission('roles.delete')) {
                             if ($role->deleted_at) {
                                 $actions .= '<button class="btn btn-sm btn-success restore-btn" data-id="' . $role->id . '" title="Restore">
                                     <i class="fas fa-undo"></i>
@@ -61,7 +62,7 @@ class RoleController extends Controller
                     ->make(true);
             }
 
-            return view('roles.index');
+            return view('roles.roles');
 
         } catch (\Exception $e) {
             _log_error('Failed to fetch roles', [
@@ -238,7 +239,7 @@ class RoleController extends Controller
             $role = Role::withTrashed()->findOrFail($id);
 
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255|unique:roles,name,' . $roleId,
+                'name' => 'required|string|max:255|unique:roles,name,' . $id,
                 'display_name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'permissions' => 'nullable|array',
@@ -297,7 +298,7 @@ class RoleController extends Controller
     {
         try {
             // Using plain ID
-            $role = Role::findOrFail($roleId);
+            $role = Role::findOrFail($id);
 
             // Check if role is assigned to any users
             $usersWithRole = User::where('role', $role->name)->count();
@@ -375,19 +376,6 @@ class RoleController extends Controller
      */
     private function getAllPermissions()
     {
-        return [
-            'dashboard.view',
-            'groups.view', 'groups.create', 'groups.edit', 'groups.delete',
-            'students.view', 'students.create', 'students.edit', 'students.delete',
-            'teachers.view', 'teachers.create', 'teachers.edit', 'teachers.delete',
-            'calendar.view', 'calendar.create', 'calendar.edit', 'calendar.delete',
-            'attendance.view', 'attendance.create', 'attendance.edit',
-            'reports.view', 'reports.generate',
-            'users.view', 'users.create', 'users.edit', 'users.delete',
-            'settings.view', 'settings.edit',
-            'analytics.view',
-            'roles.view', 'roles.create', 'roles.edit', 'roles.delete',
-            'permissions.view', 'permissions.assign',
-        ];
+        return Permission::all()->pluck('name');   
     }
 }

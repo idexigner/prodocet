@@ -8,6 +8,7 @@ return [
     'heading' => 'Students Management',
     'add_new' => 'Add New Student',
     'edit_student' => 'Edit Student',
+    'basic_info' => 'Basic Information',
     
     // Table Headers
     'id' => 'ID',
@@ -45,11 +46,13 @@ return [
     'address_placeholder' => 'Address',
     'emergency_contact_placeholder' => 'Emergency Contact',
     'emergency_phone_placeholder' => 'Emergency Phone',
+    'passport_number_placeholder' => 'Passport Number',
     
     // Buttons
     'submit' => 'Submit',
     'update' => 'Update',
     'close' => 'Close',
+    'save' => 'Save',
     'edit' => 'Edit',
     'delete' => 'Delete',
     'restore' => 'Restore',
@@ -105,4 +108,19 @@ return [
     'validation_failed' => 'Validation failed',
     'create_form_failed' => 'Failed to load creation form',
     'edit_form_failed' => 'Failed to load edit form',
+    
+    // Missing translations
+    'passport_number' => 'Passport Number',
+    'documents' => 'Documents',
+    'generate_password' => 'Generate Password',
+    'toggle_password' => 'Toggle Password Visibility',
+    'upload_documents' => 'Upload Documents',
+    'view_document' => 'View Document',
+    'remove_document' => 'Remove Document',
+    'password_generated' => 'Password Generated',
+    'document_uploaded' => 'Document Uploaded',
+    'document_removed' => 'Document Removed',
+    'select_files' => 'Select Files',
+    'accepted_formats' => 'Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG',
+    'max_file_size' => 'Max file size: 10MB',
 ];

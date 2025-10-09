@@ -15,14 +15,27 @@ class PermissionHelper
     public static function hasPermission(User $user, string $permission): bool
     {
         try {
-            // Check if user has direct permission
-            if ($user->hasPermissionTo($permission)) {
-                return true;
-            }
-
             // Check if user has permission through role
             if ($user->hasRole('super-admin')) {
                 return true; // Super admin has all permissions
+            }
+
+            // Check all user roles
+            foreach ($user->roles as $role) {
+                // Handle Spatie Role model with permissions as string/array
+                $rolePermissions = $role->permissions;
+                
+                // If permissions is a string, try to decode it as JSON
+                if (is_string($rolePermissions)) {
+                    $decoded = json_decode($rolePermissions, true);
+                    if ($decoded && is_array($decoded) && in_array($permission, $decoded)) {
+                        return true;
+                    }
+                }
+                // If permissions is already an array
+                elseif (is_array($rolePermissions) && in_array($permission, $rolePermissions)) {
+                    return true;
+                }
             }
 
             return false;
@@ -47,7 +60,19 @@ class PermissionHelper
                 return [];
             }
 
-            return $role->permissions->pluck('name')->toArray();
+            $permissions = $role->permissions;
+            
+            // If permissions is a string, try to decode it as JSON
+            if (is_string($permissions)) {
+                $decoded = json_decode($permissions, true);
+                return $decoded ?: [];
+            }
+            // If permissions is already an array
+            elseif (is_array($permissions)) {
+                return $permissions;
+            }
+            
+            return [];
         } catch (\Exception $e) {
             self::logError('Get role permissions failed', [
                 'role' => $roleName,
@@ -127,13 +152,22 @@ class PermissionHelper
         try {
             $permissions = [];
 
-            // Get direct permissions
-            $directPermissions = $user->getDirectPermissions()->pluck('name')->toArray();
-            $permissions = array_merge($permissions, $directPermissions);
-
             // Get permissions through roles
-            $rolePermissions = $user->getPermissionsViaRoles()->pluck('name')->toArray();
-            $permissions = array_merge($permissions, $rolePermissions);
+            foreach ($user->roles as $role) {
+                $rolePermissions = $role->permissions;
+                
+                // If permissions is a string, try to decode it as JSON
+                if (is_string($rolePermissions)) {
+                    $decoded = json_decode($rolePermissions, true);
+                    if ($decoded && is_array($decoded)) {
+                        $permissions = array_merge($permissions, $decoded);
+                    }
+                }
+                // If permissions is already an array
+                elseif (is_array($rolePermissions)) {
+                    $permissions = array_merge($permissions, $rolePermissions);
+                }
+            }
 
             // Remove duplicates
             return array_unique($permissions);
