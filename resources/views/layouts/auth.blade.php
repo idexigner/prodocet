@@ -18,7 +18,7 @@
 <body>
     <!-- Login Page Container -->
     <div class="auth-container">
-        <div class="container-fluid h-100">
+        <div class="container-fluid" style="height: 100vh;">
             <div class="row h-100">
                 <!-- Left Side - Branding -->
                 <div class="col-lg-6 d-none d-lg-block auth-brand-side">
@@ -28,7 +28,7 @@
                             <h1>PRODOCET</h1>
                             <p class="brand-subtitle">Sistema de Gestión de Aprendizaje</p>
                         </div>
-                        <div class="brand-features">
+                        <div class="brand-features d-none">
                             <div class="feature-item">
                                 <i class="fas fa-users"></i>
                                 <span>Gestión de Estudiantes</span>

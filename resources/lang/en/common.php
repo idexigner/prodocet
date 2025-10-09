@@ -16,6 +16,8 @@ return [
     'roles' => 'Roles',
     'teachers' => 'Teachers',
     'students' => 'Students',
+    'courses' => 'Courses',
+    'curriculum' => 'Curriculum',
     
     // Common Actions
     'save' => 'Save',
@@ -169,4 +171,38 @@ return [
     'invalid_file_type' => 'Invalid file type',
     'file_too_large' => 'File is too large',
     'upload_failed' => 'Upload failed',
+    
+    // Header & Navigation
+    'notifications' => 'Notifications',
+    'sessions_remaining' => ':count sessions remaining',
+    'group_basic_english' => 'Basic English Group A1',
+    'hours_ago' => ':count hours ago',
+    'new_student_registered' => 'New student registered',
+    'student_french_b1' => 'María González - French B1',
+    'class_cancelled' => 'Class cancelled',
+    'german_intermediate_tomorrow' => 'German Intermediate - Tomorrow 10:00',
+    'yesterday' => 'Yesterday',
+    'mark_all_read' => 'Mark all as read',
+    'view_all_alerts' => 'View All Alerts',
+    'configure_profile' => 'Configure Profile',
+    'customize_colors' => 'Customize Colors',
+    'logout' => 'Logout',
+    'filter' => 'Filter',
+    'clear' => 'Clear',
+    'select_option' => 'Select Option',
+    'language_changed' => 'Language changed successfully',
+    
+    // DataTable Translations
+    'show_entries' => 'Show _MENU_ entries',
+    'no_results' => 'No matching records found',
+    'no_data' => 'No data available in table',
+    'showing_entries' => 'Showing _START_ to _END_ of _TOTAL_ entries',
+    'showing_entries_empty' => 'Showing 0 to 0 of 0 entries',
+    'filtered_entries' => '(filtered from _MAX_ total entries)',
+    'first' => 'First',
+    'last' => 'Last',
+    'excel' => 'Excel',
+    'pdf' => 'PDF',
+    'print' => 'Print',
+    'request_error' => 'Request error',
 ];

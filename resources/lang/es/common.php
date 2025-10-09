@@ -16,6 +16,8 @@ return [
     'roles' => 'Roles',
     'teachers' => 'Profesores',
     'students' => 'Estudiantes',
+    'courses' => 'Cursos',
+    'curriculum' => 'Currículo',
     
     // Common Actions
     'save' => 'Guardar',
@@ -169,4 +171,38 @@ return [
     'invalid_file_type' => 'Tipo de archivo inválido',
     'file_too_large' => 'El archivo es demasiado grande',
     'upload_failed' => 'Error al subir archivo',
+    
+    // Header & Navigation
+    'notifications' => 'Notificaciones',
+    'sessions_remaining' => ':count sesiones restantes',
+    'group_basic_english' => 'Grupo Inglés Básico A1',
+    'hours_ago' => 'Hace :count horas',
+    'new_student_registered' => 'Nuevo estudiante registrado',
+    'student_french_b1' => 'María González - Francés B1',
+    'class_cancelled' => 'Clase cancelada',
+    'german_intermediate_tomorrow' => 'Alemán Intermedio - Mañana 10:00',
+    'yesterday' => 'Ayer',
+    'mark_all_read' => 'Marcar todas como leídas',
+    'view_all_alerts' => 'Ver Todas las Alertas',
+    'configure_profile' => 'Configurar Perfil',
+    'customize_colors' => 'Personalizar Colores',
+    'logout' => 'Cerrar Sesión',
+    'filter' => 'Filtrar',
+    'clear' => 'Limpiar',
+    'select_option' => 'Seleccionar Opción',
+    'language_changed' => 'Idioma cambiado exitosamente',
+    
+    // DataTable Translations
+    'show_entries' => 'Mostrar _MENU_ registros',
+    'no_results' => 'No se encontraron registros coincidentes',
+    'no_data' => 'No hay datos disponibles en la tabla',
+    'showing_entries' => 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+    'showing_entries_empty' => 'Mostrando 0 a 0 de 0 registros',
+    'filtered_entries' => '(filtrado de _MAX_ registros totales)',
+    'first' => 'Primero',
+    'last' => 'Último',
+    'excel' => 'Excel',
+    'pdf' => 'PDF',
+    'print' => 'Imprimir',
+    'request_error' => 'Error en la solicitud',
 ];

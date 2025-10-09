@@ -463,7 +463,8 @@ body {
 }
 
 .user-dropdown {
-    width: 280px;
+    /* width: 280px; */
+    min-width: 250px;
     border: none;
     box-shadow: var(--shadow-xl);
     border-radius: var(--border-radius-lg);
@@ -1807,5 +1808,312 @@ body {
     :root {
         --border-color: #000000;
         --text-secondary: #000000;
+    }
+}
+
+/* Password Generator Styles */
+.password-generator-btn {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    border: 1px solid #17a2b8;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.password-generator-btn:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    border-color: #138496;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+}
+
+.password-generator-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(23, 162, 184, 0.2);
+}
+
+.password-generator-btn i {
+    transition: transform 0.3s ease;
+}
+
+.password-generator-btn:hover i {
+    transform: scale(1.1);
+}
+
+/* Password toggle button styles */
+.password-toggle-btn {
+    border: 1px solid #6c757d;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.password-toggle-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #6c757d;
+    color: #495057;
+}
+
+.password-toggle-btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+}
+
+/* Input group with multiple buttons */
+.input-group .btn {
+    border-left: 0;
+}
+
+.input-group .btn:first-child {
+    border-left: 1px solid #ced4da;
+}
+
+/* Tooltip styles for password generator */
+.btn[title] {
+    position: relative;
+}
+
+.btn[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 5px;
+}
+
+.btn[title]:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: #333;
+    margin-bottom: 1px;
+    z-index: 1000;
+}
+
+/* Animation for password generation */
+@keyframes passwordGenerated {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.password-generated {
+    animation: passwordGenerated 0.6s ease-in-out;
+}
+
+/* Responsive adjustments for password buttons */
+@media (max-width: 576px) {
+    .input-group .btn {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .password-generator-btn {
+        padding: 0.375rem 0.5rem;
+    }
+}
+
+/* Document Upload Styles */
+.document-upload-container {
+    position: relative;
+}
+
+.document-upload-container input[type="file"] {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.document-upload-container input[type="file"]:hover {
+    border-color: var(--primary-color);
+    background: #f0f8ff;
+}
+
+.document-upload-container input[type="file"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+}
+
+.document-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.document-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.document-item:hover {
+    background: #e9ecef;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.document-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.document-info i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.document-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.document-size {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-left: 0.5rem;
+}
+
+.document-actions {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.document-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.document-actions .btn:hover {
+    transform: scale(1.05);
+}
+
+.document-actions .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.document-actions .btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* File type specific icons */
+.document-item[data-type*="pdf"] .document-info i {
+    color: #dc3545;
+}
+
+.document-item[data-type*="word"] .document-info i,
+.document-item[data-type*="document"] .document-info i {
+    color: #0d6efd;
+}
+
+.document-item[data-type*="image"] .document-info i {
+    color: #198754;
+}
+
+/* Animation for document addition/removal */
+@keyframes documentSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes documentSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+}
+
+.document-item {
+    animation: documentSlideIn 0.3s ease-out;
+}
+
+.document-item.removing {
+    animation: documentSlideOut 0.3s ease-in forwards;
+}
+
+/* Empty state for document preview */
+.document-preview:empty::before {
+    content: "No documents selected";
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
+/* Responsive adjustments for document upload */
+@media (max-width: 768px) {
+    .document-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .document-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .document-name {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .document-upload-container input[type="file"] {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .document-item {
+        padding: 0.5rem;
+    }
+    
+    .document-actions .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
     }
 }

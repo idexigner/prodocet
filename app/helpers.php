@@ -5,28 +5,34 @@ use App\Helpers\PermissionHelper;
 
 if (!function_exists('_has_permission')) {
     /**
-     * Check if user has specific permission
+     * Check if current user has specific permission
      * 
-     * @param User $user
      * @param string $permission
      * @return bool
      */
-    function _has_permission(User $user, string $permission): bool
+    function _has_permission(string $permission): bool
     {
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
         return PermissionHelper::hasPermission($user, $permission);
     }
 }
 
 if (!function_exists('_can_access_module')) {
     /**
-     * Check if user can access specific module
+     * Check if current user can access specific module
      * 
-     * @param User $user
      * @param string $module
      * @return bool
      */
-    function _can_access_module(User $user, string $module): bool
+    function _can_access_module(string $module): bool
     {
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
         return PermissionHelper::canAccessModule($user, $module);
     }
 }
@@ -176,11 +182,15 @@ if (!function_exists('_get_user_role')) {
 }
 
 
-function _encrypt_id($id) {
-    // return $id;
-    return base64_encode($id);
+if (!function_exists('_encrypt_id')) {
+    function _encrypt_id($id) {
+        // return $id;
+        return base64_encode($id);
+    }
 }
 
-function _decrypt_id($id) {
-    return base64_decode($id);
+if (!function_exists('_decrypt_id')) {
+    function _decrypt_id($id) {
+        return base64_decode($id);
+    }
 }

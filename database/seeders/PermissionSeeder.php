@@ -56,10 +56,16 @@ class PermissionSeeder extends Seeder
                 'reports.generate',
                 
                 // Users permissions
-                'users.view',
-                'users.create',
-                'users.edit',
-                'users.delete',
+            'users.view',
+            'users.create',
+            'users.edit',
+            'users.delete',
+            
+            // Enrollment Request Management
+            'enrollment-requests.view',
+            'enrollment-requests.approve',
+            'enrollment-requests.reject',
+            'enrollment-requests.auto-assign',
                 
                 // Settings permissions
                 'settings.view',
@@ -75,6 +81,26 @@ class PermissionSeeder extends Seeder
                 'roles.delete',
                 'permissions.view',
                 'permissions.assign',
+                
+                // Student-specific permissions
+                'student.dashboard.view',
+                'student.courses.view',
+                'student.courses.enroll',
+                'student.schedule.view',
+                'student.profile.view',
+                'student.profile.edit',
+                'student.documents.view',
+                'student.documents.upload',
+                'student.attendance.view',
+                'student.grades.view',
+            'student.assignments.view',
+            'student.assignments.submit',
+            
+            // Enrollment Request Management
+            'enrollment-requests.view',
+            'enrollment-requests.approve',
+            'enrollment-requests.reject',
+            'enrollment-requests.auto-assign',
             ];
 
             foreach ($permissions as $permission) {
@@ -119,6 +145,13 @@ class PermissionSeeder extends Seeder
                         'dashboard.view',
                         'calendar.view',
                         'attendance.view',
+                        // Student-specific permissions
+                        'student.dashboard.view',
+                        'student.courses.view',
+                        'student.schedule.view',
+                        'student.profile.view',
+                        'student.profile.edit',
+                        'student.attendance.view',
                     ]
                 ],
                 'hr' => [

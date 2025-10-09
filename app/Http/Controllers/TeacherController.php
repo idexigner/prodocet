@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\TeacherAvailability;
+use App\Models\Slot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -23,6 +26,19 @@ class TeacherController extends Controller
                     ->select(['id', 'first_name', 'last_name', 'email', 'phone', 'document_id', 'is_active', 'created_at', 'deleted_at']);
 
                 return DataTables::of($teachers)
+                    ->filter(function ($query) use ($request) {
+                        $searchValue = $request->get('search')['value'] ?? '';
+                        if (!empty($searchValue)) {
+                            $query->where(function ($q) use ($searchValue) {
+                                $q->where('first_name', 'like', "%{$searchValue}%")
+                                  ->orWhere('last_name', 'like', "%{$searchValue}%")
+                                  ->orWhere('email', 'like', "%{$searchValue}%")
+                                  ->orWhere('phone', 'like', "%{$searchValue}%")
+                                  ->orWhere('document_id', 'like', "%{$searchValue}%")
+                                  ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$searchValue}%"]);
+                            });
+                        }
+                    })
                     ->addColumn('full_name', function ($teacher) {
                         return $teacher->first_name . ' ' . $teacher->last_name;
                     })
@@ -37,13 +53,13 @@ class TeacherController extends Controller
                     ->addColumn('action', function ($teacher) {
                         $actions = '';
                         
-                        if (_has_permission(auth()->user(), 'teachers.edit')) {
+                        if (_has_permission('teachers.edit')) {
                             $actions .= '<button class="btn btn-sm btn-primary edit-btn" data-id="' . $teacher->id . '" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button> ';
                         }
                         
-                        if (_has_permission(auth()->user(), 'teachers.delete')) {
+                        if (_has_permission('teachers.delete')) {
                             if ($teacher->deleted_at) {
                                 $actions .= '<button class="btn btn-sm btn-success restore-btn" data-id="' . $teacher->id . '" title="Restore">
                                     <i class="fas fa-undo"></i>
@@ -61,7 +77,7 @@ class TeacherController extends Controller
                     ->make(true);
             }
 
-            return view('teachers.index');
+            return view('teachers.teachers');
 
         } catch (\Exception $e) {
             _log_error('Failed to fetch teachers', [
@@ -117,12 +133,15 @@ class TeacherController extends Controller
                 'password' => 'required|string|min:8|confirmed',
                 'phone' => 'nullable|string|max:20',
                 'document_id' => 'nullable|string|max:50',
+                'passport_number' => 'nullable|string|max:50|regex:/^[A-Za-z0-9]+$/',
                 'birth_date' => 'nullable|date',
                 'address' => 'nullable|string',
                 'emergency_contact' => 'nullable|string|max:255',
                 'emergency_phone' => 'nullable|string|max:20',
                 'language_preference' => 'in:es,en',
-                'is_active' => 'boolean'
+                'is_active' => 'boolean',
+                'documents' => 'nullable|array',
+                'documents.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240'
             ]);
 
             if ($validator->fails()) {
@@ -133,6 +152,16 @@ class TeacherController extends Controller
                 ], 422);
             }
 
+            // Handle document uploads
+            $documentPaths = [];
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $document) {
+                    $filename = time() . '_' . $document->getClientOriginalName();
+                    $path = $document->storeAs('documents', $filename, 'public');
+                    $documentPaths[] = $filename;
+                }
+            }
+
             $teacher = User::create([
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'first_name' => $request->first_name,
@@ -141,13 +170,15 @@ class TeacherController extends Controller
                 'password' => Hash::make($request->password),
                 'phone' => $request->phone,
                 'document_id' => $request->document_id,
+                'passport_number' => $request->passport_number,
                 'birth_date' => $request->birth_date,
                 'address' => $request->address,
                 'emergency_contact' => $request->emergency_contact,
                 'emergency_phone' => $request->emergency_phone,
                 'language_preference' => $request->language_preference ?? 'es',
                 'role' => 'teacher',
-                'is_active' => $request->boolean('is_active', true)
+                'is_active' => $request->boolean('is_active', true),
+                'documents' => $documentPaths
             ]);
 
             _log_info('Teacher created successfully', [
@@ -252,12 +283,15 @@ class TeacherController extends Controller
                 'password' => 'nullable|string|min:8|confirmed',
                 'phone' => 'nullable|string|max:20',
                 'document_id' => 'nullable|string|max:50',
+                'passport_number' => 'nullable|string|max:50|regex:/^[A-Za-z0-9]+$/',
                 'birth_date' => 'nullable|date',
                 'address' => 'nullable|string',
                 'emergency_contact' => 'nullable|string|max:255',
                 'emergency_phone' => 'nullable|string|max:20',
                 'language_preference' => 'in:es,en',
-                'is_active' => 'boolean'
+                'is_active' => 'boolean',
+                'documents' => 'nullable|array',
+                'documents.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240'
             ]);
 
             if ($validator->fails()) {
@@ -268,18 +302,53 @@ class TeacherController extends Controller
                 ], 422);
             }
 
+            // Handle document management
+            $existingDocuments = $teacher->documents ?? [];
+            $newDocuments = [];
+            
+            // Process new document uploads
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $document) {
+                    $filename = time() . '_' . $document->getClientOriginalName();
+                    $path = $document->storeAs('documents', $filename, 'public');
+                    $newDocuments[] = $filename;
+                }
+            }
+            
+            // Handle document removal (from frontend)
+            $documentsToKeep = $existingDocuments;
+            if ($request->has('documents_to_remove')) {
+                $documentsToRemove = explode(',', $request->input('documents_to_remove'));
+                $documentsToKeep = array_diff($existingDocuments, $documentsToRemove);
+                
+                // Delete removed files from storage
+                foreach ($documentsToRemove as $docToRemove) {
+                    if (!empty($docToRemove)) {
+                        $filePath = storage_path('app/public/documents/' . $docToRemove);
+                        if (file_exists($filePath)) {
+                            unlink($filePath);
+                        }
+                    }
+                }
+            }
+            
+            // Combine existing (kept) documents with new documents
+            $finalDocuments = array_merge(array_values($documentsToKeep), $newDocuments);
+
             $updateData = [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'document_id' => $request->document_id,
+                'passport_number' => $request->passport_number,
                 'birth_date' => $request->birth_date,
                 'address' => $request->address,
                 'emergency_contact' => $request->emergency_contact,
                 'emergency_phone' => $request->emergency_phone,
                 'language_preference' => $request->language_preference ?? 'es',
-                'is_active' => $request->boolean('is_active', true)
+                'is_active' => $request->boolean('is_active', true),
+                'documents' => $finalDocuments
             ];
 
             if ($request->filled('password')) {
@@ -382,6 +451,314 @@ class TeacherController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => _trans('teachers.restore_failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete a specific document for a teacher.
+     */
+    public function deleteDocument(Request $request, string $id)
+    {
+        try {
+            $teacher = User::where('role', 'teacher')->findOrFail($id);
+            $documentName = $request->input('document_name');
+            
+            if (!$documentName) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Document name is required'
+                ], 400);
+            }
+
+            $documents = $teacher->documents;
+            $documents = array_filter($documents, function($doc) use ($documentName) {
+                return $doc !== $documentName;
+            });
+
+            // Delete file from storage
+            $filePath = storage_path('app/public/documents/' . $documentName);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            // Update teacher documents
+            $teacher->update(['documents' => array_values($documents)]);
+
+            _log_info('Teacher document deleted', [
+                'teacher_id' => $teacher->id,
+                'document_name' => $documentName,
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Document deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            _log_error('Failed to delete teacher document', [
+                'error' => $e->getMessage(),
+                'teacher_id' => $id,
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete document'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get teacher assigned courses.
+     */
+    public function getCourses(string $id)
+    {
+        try {
+            $teacher = User::where('role', 'teacher')->findOrFail($id);
+            
+            // Get teacher's assigned courses
+            $assignedCourses = DB::table('teacher_course')
+                ->where('teacher_id', $teacher->id)
+                ->get();
+            
+            return response()->json([
+                'success' => true,
+                'data' => $assignedCourses
+            ]);
+
+        } catch (\Exception $e) {
+            _log_error('Failed to fetch teacher courses', [
+                'error' => $e->getMessage(),
+                'teacher_id' => $id,
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch teacher courses'
+            ], 500);
+        }
+    }
+
+    /**
+     * Save teacher course assignments.
+     */
+    public function saveCourses(Request $request, string $id)
+    {
+        try {
+            $teacher = User::where('role', 'teacher')->findOrFail($id);
+
+            $validator = Validator::make($request->all(), [
+                'course_ids' => 'required|array',
+                'course_ids.*' => 'integer|exists:courses,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            DB::transaction(function () use ($teacher, $request) {
+                // Clear existing course assignments
+                DB::table('teacher_course')->where('teacher_id', $teacher->id)->delete();
+                
+                // Insert new course assignments
+                $courseAssignments = [];
+                foreach ($request->course_ids as $courseId) {
+                    $courseAssignments[] = [
+                        'teacher_id' => $teacher->id,
+                        'course_id' => $courseId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                
+                if (!empty($courseAssignments)) {
+                    DB::table('teacher_course')->insert($courseAssignments);
+                }
+            });
+
+            _log_info('Teacher courses saved', [
+                'teacher_id' => $teacher->id,
+                'courses_count' => count($request->course_ids),
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Teacher courses saved successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            _log_error('Failed to save teacher courses', [
+                'error' => $e->getMessage(),
+                'teacher_id' => $id,
+                'request_data' => $request->all(),
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save teacher courses'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get teacher availability data.
+     */
+    public function getAvailability(string $id)
+    {
+        try {
+            $teacher = User::where('role', 'teacher')->findOrFail($id);
+            
+            // Get all slots grouped by day
+            $slots = Slot::orderBy('day_of_week')
+                ->orderBy('start_time')
+                ->get()
+                ->groupBy('day_of_week');
+            
+            // Get teacher's current availability
+            $availability = TeacherAvailability::where('teacher_id', $teacher->id)
+                ->pluck('is_available', 'slot_id')
+                ->toArray();
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'teacher' => $teacher,
+                    'slots' => $slots,
+                    'availability' => $availability
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            _log_error('Failed to fetch teacher availability', [
+                'error' => $e->getMessage(),
+                'teacher_id' => $id,
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => _trans('teacher_availability.fetch_failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Save teacher availability.
+     */
+    public function saveAvailability(Request $request, string $id)
+    {
+        try {
+            $teacher = User::where('role', 'teacher')->findOrFail($id);
+
+            $validator = Validator::make($request->all(), [
+                'availability' => 'required|array',
+                'availability.*' => 'in:0,1,true,false',
+                'notes' => 'nullable|string',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => _trans('teacher_availability.validation_failed'),
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            DB::transaction(function () use ($teacher, $request) {
+                // Clear existing availability
+                TeacherAvailability::where('teacher_id', $teacher->id)->delete();
+                
+                // Insert new availability
+                $availabilityData = [];
+                foreach ($request->availability as $slotId => $isAvailable) {
+                    if ($isAvailable) {
+                        // Get the slot to get the day_of_week
+                        $slot = Slot::find($slotId);
+                        if ($slot) {
+                            $availabilityData[] = [
+                                'teacher_id' => $teacher->id,
+                                'slot_id' => $slotId,
+                                'day_of_week' => $slot->day_of_week,
+                                'is_available' => true,
+                                'effective_from' => now()->toDateString(),
+                                'notes' => $request->notes,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ];
+                        }
+                    }
+                }
+                
+                if (!empty($availabilityData)) {
+                    TeacherAvailability::insert($availabilityData);
+                }
+            });
+
+            _log_info('Teacher availability saved', [
+                'teacher_id' => $teacher->id,
+                'slots_count' => count($request->availability),
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => _trans('teacher_availability.availability_saved')
+            ]);
+
+        } catch (\Exception $e) {
+            _log_error('Failed to save teacher availability', [
+                'error' => $e->getMessage(),
+                'teacher_id' => $id,
+                'request_data' => $request->all(),
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => _trans('teacher_availability.save_failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Clear teacher availability.
+     */
+    public function clearAvailability(string $id)
+    {
+        try {
+            $teacher = User::where('role', 'teacher')->findOrFail($id);
+
+            TeacherAvailability::where('teacher_id', $teacher->id)->delete();
+
+            _log_info('Teacher availability cleared', [
+                'teacher_id' => $teacher->id,
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => _trans('teacher_availability.availability_cleared')
+            ]);
+
+        } catch (\Exception $e) {
+            _log_error('Failed to clear teacher availability', [
+                'error' => $e->getMessage(),
+                'teacher_id' => $id,
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => _trans('teacher_availability.clear_failed')
             ], 500);
         }
     }

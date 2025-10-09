@@ -1,402 +1,456 @@
-
-
 @extends('layouts.app')
 
-@section('title', 'Groups')
+@section('title', __('groups.title'))
 
-
-@section('main-section')
-
-
-   
-
-            <div class="content-header">
-                <div class="content-title">
-                    <h1>GestiÃ³n de Grupos</h1>
-                    <p class="content-subtitle">Administrar grupos, cursos y asignaciones de estudiantes</p>
-                </div>
-                <div class="content-actions">
-                    <button class="btn btn-success" onclick="openNewGroupModal()">
-                        <i class="fas fa-plus"></i>
-                        Nuevo Grupo
-                    </button>
-                    <button class="btn btn-outline-secondary" onclick="exportGroups()">
-                        <i class="fas fa-download"></i>
-                        Exportar
-                    </button>
-                </div>
-            </div>
-
-            <!-- Filters and Search -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label">Idioma</label>
-                                    <select class="form-select" id="languageFilter">
-                                        <option value="">Todos los idiomas</option>
-                                        <option value="english">InglÃ©s</option>
-                                        <option value="french">FrancÃ©s</option>
-                                        <option value="german">AlemÃ¡n</option>
-                                        <option value="italian">Italiano</option>
-                                        <option value="portuguese">PortuguÃ©s</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Nivel</label>
-                                    <select class="form-select" id="levelFilter">
-                                        <option value="">Todos los niveles</option>
-                                        <option value="A1">A1 - BÃ¡sico</option>
-                                        <option value="A2">A2 - Elemental</option>
-                                        <option value="B1">B1 - Intermedio</option>
-                                        <option value="B2">B2 - Intermedio Alto</option>
-                                        <option value="C1">C1 - Avanzado</option>
-                                        <option value="C2">C2 - Experto</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Estado</label>
-                                    <select class="form-select" id="statusFilter">
-                                        <option value="">Todos los estados</option>
-                                        <option value="active">Activo</option>
-                                        <option value="inactive">Inactivo</option>
-                                        <option value="completed">Completado</option>
-                                        <option value="suspended">Suspendido</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 d-flex align-items-end">
-                                    <button class="btn btn-primary w-100" onclick="applyFilters()">
-                                        <i class="fas fa-filter"></i>
-                                        Aplicar Filtros
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Groups Table -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">
-                                <i class="fas fa-users me-2"></i>
-                                Lista de Grupos
-                            </h5>
-                            <div class="card-tools">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary active" onclick="switchView('table')">
-                                        <i class="fas fa-table"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="switchView('cards')">
-                                        <i class="fas fa-th"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <!-- Table View -->
-                            <div id="tableView">
-                                <div class="table-responsive">
-                                    <table id="groupsTable" class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Nombre del Grupo</th>
-                                                <th>Idioma</th>
-                                                <th>Nivel</th>
-                                                <th>Profesor</th>
-                                                <th>Estudiantes</th>
-                                                <th>Horario</th>
-                                                <th>Estado</th>
-                                                <th>Tarifa/Hora</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Data will be populated by JavaScript -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- Cards View (Initially Hidden) -->
-                            <div id="cardsView" class="d-none">
-                                <div class="row" id="groupsCards">
-                                    <!-- Cards will be populated by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-    
-
-    <!-- New Group Modal -->
-    <div class="modal fade" id="newGroupModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-plus-circle me-2"></i>
-                        Crear Nuevo Grupo
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="newGroupForm" data-autosave="true">
-                        <div class="row">
-                            <!-- Basic Information -->
-                            <div class="col-12">
-                                <h6 class="border-bottom pb-2 mb-3">InformaciÃ³n BÃ¡sica</h6>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="groupName" class="form-label">Nombre del Grupo * (MÃ¡x. 50 caracteres)</label>
-                                    <input type="text" class="form-control" id="groupName" name="groupName" maxlength="50" required>
-                                    <small class="form-text text-muted">MÃ¡ximo 50 caracteres permitidos</small>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="groupCode" class="form-label">CÃ³digo del Grupo</label>
-                                    <input type="text" class="form-control" id="groupCode" name="groupCode" placeholder="Auto-generado">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="language" class="form-label">Idioma *</label>
-                                    <select class="form-select" id="language" name="language" required>
-                                        <option value="">Seleccionar idioma</option>
-                                        <option value="english">InglÃ©s</option>
-                                        <option value="french">FrancÃ©s</option>
-                                        <option value="german">AlemÃ¡n</option>
-                                        <option value="italian">Italiano</option>
-                                        <option value="portuguese">PortuguÃ©s</option>
-                                        <option value="spanish">EspaÃ±ol</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="level" class="form-label">Nivel *</label>
-                                    <select class="form-select" id="level" name="level" required>
-                                        <option value="">Seleccionar nivel</option>
-                                        <option value="A1">A1 - BÃ¡sico</option>
-                                        <option value="A2">A2 - Elemental</option>
-                                        <option value="B1">B1 - Intermedio</option>
-                                        <option value="B2">B2 - Intermedio Alto</option>
-                                        <option value="C1">C1 - Avanzado</option>
-                                        <option value="C2">C2 - Experto</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <!-- Teacher and Schedule -->
-                            <div class="col-12">
-                                <h6 class="border-bottom pb-2 mb-3 mt-3">Profesor y Horario</h6>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="teacher" class="form-label">Profesor Asignado</label>
-                                    <select class="form-select" id="teacher" name="teacher">
-                                        <option value="">Seleccionar profesor</option>
-                                        <option value="garcia">Prof. GarcÃ­a</option>
-                                        <option value="martin">Prof. MartÃ­n</option>
-                                        <option value="lopez">Prof. LÃ³pez</option>
-                                        <option value="schmidt">Prof. Schmidt</option>
-                                        <option value="rossi">Prof. Rossi</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="maxStudents" class="form-label">MÃ¡ximo de Estudiantes</label>
-                                    <input type="number" class="form-control" id="maxStudents" name="maxStudents" min="1" max="20" value="10">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="scheduleDay" class="form-label">DÃ­a de la Semana</label>
-                                    <select class="form-select" id="scheduleDay" name="scheduleDay">
-                                        <option value="">Seleccionar dÃ­a</option>
-                                        <option value="monday">Lunes</option>
-                                        <option value="tuesday">Martes</option>
-                                        <option value="wednesday">MiÃ©rcoles</option>
-                                        <option value="thursday">Jueves</option>
-                                        <option value="friday">Viernes</option>
-                                        <option value="saturday">SÃ¡bado</option>
-                                        <option value="sunday">Domingo</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="scheduleTime" class="form-label">Hora de Inicio</label>
-                                    <input type="time" class="form-control" id="scheduleTime" name="scheduleTime">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="duration" class="form-label">DuraciÃ³n (minutos)</label>
-                                    <select class="form-select" id="duration" name="duration">
-                                        <option value="60">60 minutos</option>
-                                        <option value="90" selected>90 minutos</option>
-                                        <option value="120">120 minutos</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <!-- Financial Information -->
-                            <div class="col-12">
-                                <h6 class="border-bottom pb-2 mb-3 mt-3">InformaciÃ³n Financiera</h6>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="hourlyRate" class="form-label">Tarifa por Hora (Pesos)</label>
-                                    <input type="number" class="form-control" id="hourlyRate" name="hourlyRate" step="100" min="0" placeholder="25000">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="totalSessions" class="form-label">Horas AcadÃ©micas</label>
-                                    <input type="number" class="form-control" id="totalSessions" name="totalSessions" min="1" value="20" placeholder="Total de horas acadÃ©micas">
-                                </div>
-                            </div>
-                            
-                            <!-- Topic Assignment -->
-                            <div class="col-12">
-                                <h6 class="border-bottom pb-2 mb-3 mt-3">AsignaciÃ³n de Temas</h6>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="subject" class="form-label">Materia Principal</label>
-                                    <select class="form-select" id="subject" name="subject">
-                                        <option value="">Seleccionar materia</option>
-                                        <option value="grammar">GramÃ¡tica</option>
-                                        <option value="conversation">ConversaciÃ³n</option>
-                                        <option value="reading">Lectura</option>
-                                        <option value="writing">Escritura</option>
-                                        <option value="listening">ComprensiÃ³n Auditiva</option>
-                                        <option value="vocabulary">Vocabulario</option>
-                                        <option value="business">InglÃ©s de Negocios</option>
-                                        <option value="exam_prep">PreparaciÃ³n de ExÃ¡menes</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="difficulty" class="form-label">Nivel de Dificultad</label>
-                                    <select class="form-select" id="difficulty" name="difficulty">
-                                        <option value="">Seleccionar nivel</option>
-                                        <option value="beginner">Principiante</option>
-                                        <option value="intermediate">Intermedio</option>
-                                        <option value="advanced">Avanzado</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label for="topics" class="form-label">Temas EspecÃ­ficos</label>
-                                    <textarea class="form-control" id="topics" name="topics" rows="3" placeholder="Lista de temas especÃ­ficos a cubrir en el curso"></textarea>
-                                </div>
-                            </div>
-                            
-                            <!-- Additional Options -->
-                            <div class="col-12">
-                                <h6 class="border-bottom pb-2 mb-3 mt-3">Opciones Adicionales</h6>
-                            </div>
-                            
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">DescripciÃ³n</label>
-                                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="DescripciÃ³n opcional del grupo"></textarea>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="allowRotation" name="allowRotation">
-                                    <label class="form-check-label" for="allowRotation">
-                                        Permitir rotaciÃ³n de estudiantes
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="autoEnroll" name="autoEnroll">
-                                    <label class="form-check-label" for="autoEnroll">
-                                        InscripciÃ³n automÃ¡tica habilitada
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="saveGroup()">
-                        <i class="fas fa-save"></i>
-                        Crear Grupo
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Group Details Modal -->
-    <div class="modal fade" id="groupDetailsModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Detalles del Grupo
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="groupDetailsContent">
-                    <!-- Content will be populated by JavaScript -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="editGroup()">
-                        <i class="fas fa-edit"></i>
-                        Editar Grupo
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endsection
-
-
-@push('scripts')
-    <script src="{{ asset('assets/js/groups.js') }}"></script>
-    
+@push('css-link')
+    @include('partials.common.datatable_style')
 @endpush
 
+@section('main-section')
+<div class="container-xxl flex-grow-1 container-p-y">
+    @if(_has_permission('groups.view'))
+        <div class="pagetitle row mt-4 mb-4">
+            <div class="col-lg-6 mt-2">
+                <h1>{{ __('groups.heading') }}</h1>
+            </div>
+            <div class="col-lg-6">
+                @if(_has_permission('groups.create'))
+                    <button type="button" class="btn btn-primary add_new" style="float: right">
+                        {{ __('groups.add_new') }}
+                    </button>
+                @endif
+            </div>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="groups-table" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>{{ __('groups.id') }}</th>
+                                        <th>{{ __('groups.name') }}</th>
+                                        <th>{{ __('groups.description') }}</th>
+                                        <th>{{ __('groups.course') }}</th>
+                                        <th>{{ __('groups.teacher') }}</th>
+                                        <th>{{ __('groups.max_students') }}</th>
+                                        <th>{{ __('groups.current_students') }}</th>
+                                        <th>{{ __('groups.status') }}</th>
+                                        <th>{{ __('groups.start_date') }}</th>
+                                        <th>{{ __('groups.created_at') }}</th>
+                                        <th>{{ __('groups.action') }}</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    @else
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h3>{{ __('groups.access_denied_title') }}</h3>
+                            <p>{{ __('groups.access_denied_message') }}</p>
+                            <a href="{{ route('dashboard') }}" class="btn btn-primary">{{ __('groups.back_to_dashboard') }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal fade" id="groupModal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groupModalLabel">{{ __('groups.add_new') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="groupModalBody">
+                <!-- Form will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Modal -->
+<div class="modal fade" id="viewGroupModal" tabindex="-1" aria-labelledby="viewGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewGroupModalLabel">{{ __('groups.view_title') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewGroupModalBody">
+                <!-- Group details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden form template -->
+<div id="group-form-template" style="display: none;">
+    <form id="groupForm">
+        @csrf
+        <input type="hidden" id="group_id" name="id">
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="name" class="form-label">{{ __('groups.form.name') }} <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="code" class="form-label">{{ __('groups.form.code') }} <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="code" name="code" required>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="course_id" class="form-label">{{ __('groups.form.course') }} <span class="text-danger">*</span></label>
+                    <select class="form-control" id="course_id" name="course_id" required>
+                        <option value="">{{ __('groups.form.select_course') }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="teacher_id" class="form-label">{{ __('groups.form.teacher') }} <span class="text-danger">*</span></label>
+                    <select class="form-control" id="teacher_id" name="teacher_id" required>
+                        <option value="">{{ __('groups.form.select_teacher') }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="max_students" class="form-label">{{ __('groups.form.max_students') }} <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="max_students" name="max_students" min="1" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="current_students" class="form-label">{{ __('groups.form.current_students') }}</label>
+                    <input type="number" class="form-control" id="current_students" name="current_students" min="0" value="0">
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="start_date" class="form-label">{{ __('groups.form.start_date') }} <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="start_date" name="start_date" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="end_date" class="form-label">{{ __('groups.form.end_date') }}</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date">
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="classroom" class="form-label">{{ __('groups.form.classroom') }}</label>
+                    <input type="text" class="form-control" id="classroom" name="classroom">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="virtual_link" class="form-label">{{ __('groups.form.virtual_link') }}</label>
+                    <input type="url" class="form-control" id="virtual_link" name="virtual_link">
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">{{ __('groups.form.description') }}</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="status" class="form-label">{{ __('groups.form.status') }} <span class="text-danger">*</span></label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="">{{ __('groups.form.select_status') }}</option>
+                        <option value="active">{{ __('groups.form.active') }}</option>
+                        <option value="inactive">{{ __('groups.form.inactive') }}</option>
+                        <option value="completed">{{ __('groups.form.completed') }}</option>
+                        <option value="cancelled">{{ __('groups.form.cancelled') }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <div class="form-check mt-4">
+                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" checked>
+                        <label class="form-check-label" for="is_active">
+                            {{ __('groups.form.is_active') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('groups.close') }}</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">{{ __('groups.submit') }}</button>
+        </div>
+    </form>
+</div>
 
 
+@endsection
 
+@push('js-link')
+    @include('partials.common.datatable_script')
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            var table = $('#groups-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('groups.index') }}",
+                    type: 'GET'
+                },
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    { data: 'description', name: 'description' },
+                    { data: 'course_name', name: 'course_name' },
+                    { data: 'teacher_name', name: 'teacher_name' },
+                    { data: 'max_students', name: 'max_students' },
+                    { data: 'current_students', name: 'current_students' },
+                    { data: 'status', name: 'status' },
+                    { data: 'start_date', name: 'start_date' },
+                    { data: 'created_at', name: 'created_at' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false }
+                ],
+                order: [[0, 'desc']],
+                pageLength: 10,
+                responsive: true,
+                language: {
+                    url: "{{ asset('vendor/datatables/i18n/' . app()->getLocale() . '.json') }}"
+                }
+            });
 
+            // Add new button click
+            $('.add_new').click(function() {
+                $('#groupModalLabel').text('{{ __("groups.add_new") }}');
+                $('#submitBtn').text('{{ __("groups.submit") }}');
+                $('#groupForm')[0].reset();
+                $('#group_id').val('');
+                $('#groupModalBody').html($('#group-form-template').html());
+                loadFormData();
+                $('#groupModal').modal('show');
+            });
+
+            // Edit button click
+            $(document).on('click', '.edit-btn', function() {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: "{{ route('groups.edit', '__id__') }}".replace('__id__', id),
+                    type: 'GET',
+                    success: function(response) {
+                        $('#groupModalLabel').text('{{ __("groups.edit_title") }}');
+                        $('#submitBtn').text('{{ __("groups.update") }}');
+                        
+                        // Use the same form template
+                        $('#groupModalBody').html($('#group-form-template').html());
+                        
+                        // Load form data (courses, teachers) first
+                        loadFormData();
+                        
+                        // Populate form with data
+                        if (response.success && response.data) {
+                            var group = response.data;
+                            $('#group_id').val(group.id);
+                            $('#name').val(group.name);
+                            $('#code').val(group.code);
+                            $('#description').val(group.description);
+                            $('#course_id').val(group.course_id);
+                            $('#teacher_id').val(group.teacher_id);
+                            $('#max_students').val(group.max_students);
+                            $('#current_students').val(group.current_students);
+                            $('#status').val(group.status);
+                            
+                            // Format dates for HTML date input
+                            if (group.start_date) {
+                                const startDate = new Date(group.start_date);
+                                const formattedStartDate = startDate.toISOString().split('T')[0];
+                                $('#start_date').val(formattedStartDate);
+                            } else {
+                                $('#start_date').val('');
+                            }
+                            
+                            if (group.end_date) {
+                                const endDate = new Date(group.end_date);
+                                const formattedEndDate = endDate.toISOString().split('T')[0];
+                                $('#end_date').val(formattedEndDate);
+                            } else {
+                                $('#end_date').val('');
+                            }
+                            
+                            $('#classroom').val(group.classroom);
+                            $('#virtual_link').val(group.virtual_link);
+                            $('#is_active').prop('checked', group.is_active);
+                        }
+                        
+                        $('#groupModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        alert('{{ __("groups.messages.error_fetching") }}');
+                    }
+                });
+            });
+
+            // View button click
+            $(document).on('click', '.view-btn', function() {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: "{{ route('groups.show', '__id__') }}".replace('__id__', id),
+                    type: 'GET',
+                    success: function(response) {
+                        $('#viewGroupModalBody').html(response);
+                        $('#viewGroupModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        alert('{{ __("groups.messages.error_fetching") }}');
+                    }
+                });
+            });
+
+            // Delete button click
+            $(document).on('click', '.delete-btn', function() {
+                var id = $(this).data('id');
+                if (confirm('{{ __("groups.messages.delete_confirm") }}')) {
+                    $.ajax({
+                        url: "{{ route('groups.destroy', '__id__') }}".replace('__id__', id),
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('{{ __("groups.messages.deleted") }}');
+                                table.ajax.reload();
+                            } else {
+                                alert('{{ __("groups.messages.error_deleting") }}');
+                            }
+                        },
+                        error: function(xhr) {
+                            alert('{{ __("groups.messages.error_deleting") }}');
+                        }
+                    });
+                }
+            });
+
+            // Restore button click
+            $(document).on('click', '.restore-btn', function() {
+                var id = $(this).data('id');
+                if (confirm('{{ __("groups.messages.restore_confirm") }}')) {
+                    $.ajax({
+                        url: "{{ route('groups.restore', '__id__') }}".replace('__id__', id),
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('{{ __("groups.messages.restored") }}');
+                                table.ajax.reload();
+                            } else {
+                                alert('{{ __("groups.messages.error_restoring") }}');
+                            }
+                        },
+                        error: function(xhr) {
+                            alert('{{ __("groups.messages.error_restoring") }}');
+                        }
+                    });
+                }
+            });
+
+            // Form submit
+            $(document).on('submit', '#groupForm', function(e) {
+                e.preventDefault();
+                
+                var formData = new FormData(this);
+                var url = $('#group_id').val() ? 
+                    "{{ route('groups.update', '__id__') }}".replace('__id__', $('#group_id').val()) : 
+                    "{{ route('groups.store') }}";
+                
+                var method = $('#course_id').val() ? 'POST' : 'POST';
+                if ($('#group_id').val()) {
+                    formData.append('_method', 'PUT');
+                }
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            alert($('#group_id').val() ? '{{ __("groups.messages.updated") }}' : '{{ __("groups.messages.created") }}');
+                            $('#groupModal').modal('hide');
+                            table.ajax.reload();
+                        } else {
+                            alert('{{ __("groups.messages.error_saving") }}');
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('{{ __("groups.messages.error_saving") }}');
+                    }
+                });
+            });
+
+            // Load form data (courses, teachers)
+            function loadFormData() {
+                // Load courses
+                var courseSelect = $('#course_id');
+                courseSelect.empty().append('<option value="">{{ __("groups.form.select_course") }}</option>');
+                @foreach($courses as $course)
+                    courseSelect.append('<option value="{{ $course->id }}">{{ $course->name }}</option>');
+                @endforeach
+
+                // Load teachers
+                var teacherSelect = $('#teacher_id');
+                teacherSelect.empty().append('<option value="">{{ __("groups.form.select_teacher") }}</option>');
+                @foreach($teachers as $teacher)
+                    teacherSelect.append('<option value="{{ $teacher->id }}">{{ $teacher->name }}</option>');
+                @endforeach
+            }
+
+            // Export functions
+            window.exportToExcel = function() {
+                window.open("{{ route('groups.export.excel') }}", '_blank');
+            };
+
+            window.exportToPDF = function() {
+                window.open("{{ route('groups.export.pdf') }}", '_blank');
+            };
+        });
+    </script>
+@endpush
